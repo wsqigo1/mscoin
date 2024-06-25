@@ -19,12 +19,37 @@ func NewTask(svcCtx *svc.ServiceContext) *Task {
 }
 
 func (t *Task) Run() {
-	_, _ = t.c.AddFunc("every 1m", func() {
-		kline.NewKline(t.svcCtx.Config.Okx).Do("1m")
+	_, _ = t.c.AddFunc("@every 1m", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("1m")
 	})
-	_, _ = t.c.AddFunc("every 1h", func() {
-		kline.NewKline(t.svcCtx.Config.Okx).Do("1h")
+	_, _ = t.c.AddFunc("@every 3m", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("3m")
 	})
+	_, _ = t.c.AddFunc("@every 5m", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("5m")
+	})
+	_, _ = t.c.AddFunc("@every 15m", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("15m")
+	})
+	_, _ = t.c.AddFunc("@every 30m", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("30m")
+	})
+	_, _ = t.c.AddFunc("@every 1H", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("1H")
+	})
+	_, _ = t.c.AddFunc("@every 2H", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("2H")
+	})
+	_, _ = t.c.AddFunc("@every 1D", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("1D")
+	})
+	_, _ = t.c.AddFunc("@every 1W", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("1W")
+	})
+	_, _ = t.c.AddFunc("@every 1M", func() {
+		kline.NewKline(t.svcCtx.Config.Okx, t.svcCtx.MongoClient).Do("1M")
+	})
+
 	t.c.Start()
 }
 
@@ -33,5 +58,6 @@ func (t *Task) Start() {
 }
 
 func (t *Task) Stop() {
-	t.c.Stop()
+	ctx := t.c.Stop()
+	<-ctx.Done()
 }

@@ -3,6 +3,7 @@ package kline
 import (
 	"encoding/json"
 	"github.com/zeromicro/go-zero/core/logx"
+	"jobcenter/internal/database"
 	"jobcenter/internal/domain"
 	"log"
 	"mscoin-common/tools"
@@ -27,13 +28,14 @@ type OkxResult struct {
 type Kline struct {
 	wg          sync.WaitGroup
 	c           OkxConfig
-	KlineDomain *domain.KlineDomain
+	klineDomain *domain.KlineDomain
 	//queueDomain *domain.QueueDomain
 }
 
-func NewKline(c OkxConfig) *Kline {
+func NewKline(c OkxConfig, client *database.MongoClient) *Kline {
 	return &Kline{
-		c: c,
+		c:           c,
+		klineDomain: domain.NewKlineDomain(client),
 	}
 }
 
@@ -69,4 +71,16 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 	}
 	logx.Info(result)
 	log.Println("==================执行存储mongo====================")
+	if result.Code == "0" {
+		//代表成功
+		k.klineDomain.SaveBatch(result.Data, symbol, period)
+		if "1m" == period {
+			//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
+			//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
+			//if len(result.Data) > 0 {
+			//	k.queueDomain.Send1mKline(result.Data[0], symbol)
+			//}
+		}
+	}
+	log.Println("==================End====================")
 }

@@ -7,4 +7,5 @@ use (
 	./mscoin-common
 	./ucenter
 	./ucenter-api
+	./market
 )

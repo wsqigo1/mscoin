@@ -21,7 +21,7 @@ services:
       --collation-server=utf8mb4_general_ci
       --explicit_defaults_for_timestamp=true
       --lower_case_table_names=1
-  Redis:
+  redis:
     container_name: redis6
     image: redis:${REDIS_VERSION}
     restart: always
@@ -31,7 +31,7 @@ services:
     ports:
       - ${REDIS_PORT}:6379
     command: redis-server /etc/redis/redis.conf
-  Etcd:
+  etcd:
     container_name: etcd3
     image: bitnami/etcd:${ETCD_VERSION}
     deploy:
@@ -51,7 +51,7 @@ services:
     restart: always
     container_name: mongo
     ports:
-      - 27018:27017
+      - 27017:27017
     volumes:
       - ${MONGO_DIR}/db:/data/db # 挂载数据目录
       - ${MONGO_DIR}/log:/var/log/mongodb  # 挂载日志目录

@@ -10,6 +10,6 @@ type Response {
 
 service register {
 	@handler register
-	get /from/:name (Request) returns (Response)
+	post /from/:name (Request) returns (Response)
 }
 

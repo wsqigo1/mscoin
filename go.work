@@ -5,4 +5,5 @@ use (
 	./mscoin-api
 	./ucenter
 	./ucenter-api
+	./mscoin-common
 )

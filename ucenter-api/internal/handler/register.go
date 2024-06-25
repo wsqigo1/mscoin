@@ -1,10 +1,16 @@
 package handler
 
 import (
-	"github.com/zeromicro/go-zero/core/logx"
+	"errors"
+	"mscoin-common/tools"
 	"net/http"
 
+	common "mscoin-common"
+	"ucenter-api/internal/logic"
 	"ucenter-api/internal/svc"
+	"ucenter-api/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 type RegisterHandler struct {
@@ -18,6 +24,33 @@ func NewRegisterHandler(svcCtx *svc.ServiceContext) *RegisterHandler {
 }
 
 func (h *RegisterHandler) Register(w http.ResponseWriter, r *http.Request) {
-	logx.Info("api register")
-	return
+	var req types.Request
+	if err := httpx.ParseJsonBody(r, &req); err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+		return
+	}
+
+	newResult := common.NewResult()
+	if req.Captcha == nil {
+		httpx.OkJsonCtx(r.Context(), w, newResult.Deal(nil, errors.New("人机校验不通过")))
+	}
+
+	// 获取一下ip
+	req.Ip = tools.GetRemoteClientIp(r)
+	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
+	resp, err := l.Register(&req)
+	result := newResult.Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+}
+
+func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
+	var req types.CodeRequest
+	if err := httpx.ParseJsonBody(r, &req); err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+		return
+	}
+	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
+	resp, err := l.SendCode(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
 }

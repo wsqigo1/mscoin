@@ -2,9 +2,50 @@
 package types
 
 type Request struct {
-	Name string `path:"name,options=you|me"`
+	Username     string   `json:"username,optional"`
+	Password     string   `json:"password,optional"`
+	Captcha      *Captcha `json:"captcha,optional"`
+	Phone        string   `json:"phone,optional"`
+	Promotion    string   `json:"promotion,optional"`
+	Code         string   `json:"code,optional"`
+	Country      string   `json:"country,optional"`
+	SuperPartner string   `json:"superPartner,optional"`
+	Ip           string   `json:"ip,optional"`
+}
+
+type Captcha struct {
+	Server string `json:"server"`
+	Token  string `json:"token"`
 }
 
 type Response struct {
 	Message string `json:"message"`
+}
+
+type CodeRequest struct {
+	Phone   string `json:"phone"`
+	Country string `json:"country"`
+}
+
+type CodeResponse struct{}
+
+type LoginReq struct {
+	Username string   `json:"username"`
+	Password string   `json:"password"`
+	Captcha  *Captcha `json:"captcha,optional"`
+	Ip       string   `json:"ip,optional"`
+}
+
+type LoginRes struct {
+	Username      string `json:"username"`
+	Token         string `json:"token"`
+	MemberLevel   string `json:"memberLevel"`
+	RealName      string `json:"realName"`
+	Country       string `json:"country"`
+	Avatar        string `json:"avatar"`
+	PromotionCode string `json:"promotionCode"`
+	Id            int64  `json:"id"`
+	LoginCount    int    `json:"loginCount"`
+	SuperPartner  string `json:"superPartner"`
+	MemberRate    int    `json:"memberRate"`
 }

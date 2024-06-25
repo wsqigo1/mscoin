@@ -4,3 +4,14 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: ucenter.rpc
+Mysql:
+  DataSource: root:root@tcp(127.0.0.1:13306)/mscoin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 127.0.0.1:16379
+    Type: node
+Captcha:
+  Vid: 6675ea94d3784602950e9292
+  Key: ecc55d18db884e0182e99ac558cbb3a8
+JWT:
+  AccessSecret: '!@#$mscoin'
+  AccessExpire: 864000
